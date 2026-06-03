@@ -670,7 +670,7 @@ async function pcRenderList(q, filter) {
     <div class="pc-search-bar">
       <div class="pc-search-input-wrap">
         <span style="color:var(--muted)">🔍</span>
-        <input class="pc-search-input" id="pcSearchInput" type="text" placeholder="氏名・フリガナ・LINE名で検索" value="${q}" oninput="clearTimeout(searchTimer);searchTimer=setTimeout(()=>pcRenderList(),300)">
+        <input class="pc-search-input" id="pcSearchInput" type="text" placeholder="氏名・フリガナ・LINE名で検索" value="${q}" oninput="clearTimeout(searchTimer);searchTimer=setTimeout(()=>pcRenderList(),600)">
       </div>
     </div>
     <div class="pc-filter-chips" style="margin-bottom:16px">${chips}</div>
@@ -848,13 +848,13 @@ function setFilter(el) {
 
 function onSearch() {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(loadCustomers, 300);
+  searchTimer = setTimeout(loadCustomers, 600);
 }
 
 async function loadCustomers() {
   const q = document.getElementById('searchInput')?.value?.trim() ?? '';
   const listEl = document.getElementById('customerList');
-  if (listEl) listEl.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  if (listEl) listEl.style.opacity = "0.5";
 
   let query = sb.from('customers').select('id,customer_code,full_name,kana_name,line_name,prefecture,status,assigned_to,last_contact_at').order('last_contact_at',{ascending:false});
   if (currentFilter !== '全て') query = query.eq('status', currentFilter);
@@ -863,7 +863,7 @@ async function loadCustomers() {
 
   const countEl = document.getElementById('countBar');
   if (error) { if(listEl) listEl.innerHTML=`<div class="empty-state"><div class="icon">⚠️</div><p>${error.message}</p></div>`; return; }
-  if (countEl) countEl.textContent = `${data.length}件`;
+  if (countEl) countEl.textContent = `${data.length}件`; if (listEl) listEl.style.opacity = '1';
   if (!listEl) return;
   if (data.length === 0) { listEl.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>該当する顧客が見つかりません</p></div>'; return; }
   listEl.innerHTML = data.map(c=>`
