@@ -20,6 +20,7 @@
   --success: #16a34a;
   --warn: #d97706;
   --header: #1e293b;
+  --sidebar-w: 240px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -29,15 +30,242 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
-  max-width: 430px;
-  margin: 0 auto;
 }
 
+/* ===== MOBILE: 430px以下は従来通り ===== */
+.app-wrapper {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ===== PC LAYOUT ===== */
+@media (min-width: 768px) {
+  body { background: #e8eaf0; }
+
+  .app-wrapper {
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: 60px 1fr;
+    min-height: 100vh;
+  }
+
+  /* PC用グローバルヘッダー */
+  .pc-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    background: var(--header);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+
+  .pc-header h1 { color: #fff; font-size: 18px; font-weight: 700; }
+  .pc-header .logo { font-size: 22px; }
+  .pc-header .spacer { flex: 1; }
+  .pc-header .pc-user { color: #94a3b8; font-size: 13px; }
+  .pc-header .pc-logout {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #fff; font-size: 13px; font-weight: 700;
+    padding: 6px 14px; cursor: pointer; font-family: inherit;
+  }
+
+  /* PC用サイドバー */
+  .pc-sidebar {
+    grid-column: 1;
+    grid-row: 2;
+    background: var(--header);
+    padding: 16px 0;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .pc-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .pc-nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .pc-nav-item.active { background: rgba(29,78,216,0.2); color: #fff; border-left-color: var(--accent); }
+  .pc-nav-item .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+
+  /* PC用メインコンテンツエリア */
+  .pc-main {
+    grid-column: 2;
+    grid-row: 2;
+    overflow-y: auto;
+    height: calc(100vh - 60px);
+    padding: 24px;
+  }
+
+  /* PC時はスマホUI要素を非表示 */
+  .mobile-topbar { display: none !important; }
+  .mobile-only { display: none !important; }
+
+  /* PC用パネル */
+  .pc-panel {
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .pc-panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .pc-panel-header h2 { font-size: 15px; font-weight: 700; flex: 1; }
+
+  /* PC 2カラム詳細 */
+  .pc-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  /* PCの検索・フィルターバー */
+  .pc-search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+
+  .pc-search-input-wrap {
+    flex: 1;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pc-search-input {
+    background: none; border: none; outline: none;
+    font-size: 14px; font-family: inherit; color: var(--text); flex: 1;
+  }
+
+  .pc-filter-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* PC テーブル風リスト */
+  .pc-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 80px;
+    padding: 10px 20px;
+    background: #f8f9fb;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .pc-table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 80px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    align-items: center;
+    transition: background 0.1s;
+  }
+
+  .pc-table-row:last-child { border-bottom: none; }
+  .pc-table-row:hover { background: #f8f9fb; }
+
+  .pc-table-name { font-size: 14px; font-weight: 700; }
+  .pc-table-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pc-table-cell { font-size: 13px; color: var(--text); }
+
+  /* PC 詳細パネル */
+  .pc-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .pc-info-row {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .pc-info-row:nth-child(even) { border-right: none; }
+
+  .pc-info-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .pc-info-value { font-size: 14px; color: var(--text); }
+
+  /* PC 履歴 */
+  .pc-int-card {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+  }
+  .pc-int-card:last-child { border-bottom: none; }
+  .pc-int-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .pc-int-notes { font-size: 14px; color: var(--text); margin-bottom: 8px; }
+  .pc-int-next { display: flex; gap: 6px; background: #fef9ec; border-radius: 8px; padding: 8px 10px; }
+
+  /* PC 担当者管理 */
+  .pc-staff-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+  }
+  .pc-staff-row:last-child { border-bottom: none; }
+
+  /* PC 対応履歴追加フォーム */
+  .pc-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .pc-form-full { grid-column: 1 / -1; }
+
+  .fab { display: none !important; }
+  .save-bar { position: static !important; border-top: none !important; padding: 0 20px 20px !important; background: none !important; }
+}
+
+/* ===== SHARED COMPONENTS ===== */
 .screen { display: none; min-height: 100vh; flex-direction: column; }
 .screen.active { display: flex; }
 
-/* TOPBAR */
-.topbar {
+/* TOPBAR (mobile) */
+.mobile-topbar {
   background: var(--header);
   color: #fff;
   padding: 14px 16px;
@@ -49,19 +277,15 @@ body {
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
-.topbar h1 { font-size: 17px; font-weight: 700; flex: 1; }
+.mobile-topbar h1 { font-size: 17px; font-weight: 700; flex: 1; }
 .topbar-back {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: none; color: #fff; font-size: 20px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .icon-btn {
   width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(255,255,255,0.12);
-  border: none; color: #fff; font-size: 18px;
+  background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 18px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
 
@@ -69,6 +293,7 @@ body {
 #loginScreen {
   background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
   align-items: center; justify-content: center; padding: 40px 24px;
+  min-height: 100vh;
 }
 .login-logo {
   width: 72px; height: 72px;
@@ -104,47 +329,26 @@ body {
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 .login-error { color: #f87171; font-size: 13px; text-align: center; margin-top: 12px; min-height: 20px; }
 
-/* LIST */
-#listScreen { background: var(--bg); }
+/* MOBILE LIST */
 .search-bar { padding: 12px 16px; background: var(--header); }
-.search-input-wrap {
-  background: rgba(255,255,255,0.1); border-radius: 10px;
-  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
-}
+.search-input-wrap { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
 .search-input { background: none; border: none; outline: none; color: #fff; font-size: 14px; font-family: inherit; flex: 1; }
 .search-input::placeholder { color: #94a3b8; }
-.filter-row {
-  display: flex; gap: 8px; padding: 10px 16px;
-  overflow-x: auto; scrollbar-width: none;
-  background: #fff; border-bottom: 1px solid var(--border);
-}
+.filter-row { display: flex; gap: 8px; padding: 10px 16px; overflow-x: auto; scrollbar-width: none; background: #fff; border-bottom: 1px solid var(--border); }
 .filter-row::-webkit-scrollbar { display: none; }
-.filter-chip {
-  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
-  white-space: nowrap; cursor: pointer;
-  border: 1.5px solid var(--border); background: #fff; color: var(--muted);
-}
+.filter-chip { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; border: 1.5px solid var(--border); background: #fff; color: var(--muted); }
 .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .count-bar { padding: 8px 16px; font-size: 12px; color: var(--muted); background: #fff; border-bottom: 1px solid var(--border); }
 .list-content { flex: 1; overflow-y: auto; padding: 8px 0; }
 
-.customer-card {
-  background: #fff; margin: 0 12px 8px; border-radius: 12px;
-  padding: 14px 16px; cursor: pointer; border: 1px solid var(--border);
-  display: flex; align-items: center; gap: 12px;
-}
+.customer-card { background: #fff; margin: 0 12px 8px; border-radius: 12px; padding: 14px 16px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
 .customer-card:active { opacity: 0.85; }
-.customer-avatar {
-  width: 44px; height: 44px; border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
-}
+.customer-avatar { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0; }
 .customer-info { flex: 1; min-width: 0; }
 .customer-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
 .customer-sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .customer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
-/* BADGES */
 .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; white-space: nowrap; }
 .badge-新規 { background: #dbeafe; color: #1d4ed8; }
 .badge-対応中 { background: #d1fae5; color: #065f46; }
@@ -152,14 +356,12 @@ body {
 .badge-完了 { background: #f3f4f6; color: #374151; }
 .assigned-label { font-size: 11px; color: var(--muted); }
 
-/* DETAIL */
-#detailScreen { background: var(--bg); }
+/* MOBILE DETAIL */
 .detail-hero { background: var(--header); padding: 20px 16px 24px; color: #fff; }
 .detail-name { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
 .detail-kana { font-size: 13px; color: #94a3b8; margin-bottom: 12px; }
 .detail-chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .detail-chip { background: rgba(255,255,255,0.12); border-radius: 8px; padding: 4px 10px; font-size: 12px; color: #e2e8f0; }
-
 .section-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; padding: 16px 16px 8px; }
 .info-card { background: #fff; margin: 0 12px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
 .info-row { display: flex; padding: 11px 16px; border-bottom: 1px solid var(--border); align-items: flex-start; gap: 8px; }
@@ -168,7 +370,6 @@ body {
 .info-value { font-size: 14px; color: var(--text); flex: 1; word-break: break-all; }
 .info-bool-yes { color: var(--danger); font-weight: 700; }
 .info-bool-no { color: var(--muted); }
-
 .collapse-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 16px 16px 8px; user-select: none; }
 .collapse-toggle .ct-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; flex: 1; }
 .collapse-toggle .ct-arrow { font-size: 14px; color: var(--muted); transition: transform 0.2s; }
@@ -176,10 +377,7 @@ body {
 .collapsible { display: none; }
 .collapsible.open { display: block; }
 
-.interaction-card {
-  background: #fff; margin: 0 12px 8px; border-radius: 12px;
-  padding: 14px 16px; border: 1px solid var(--border); border-left: 3px solid var(--accent);
-}
+.interaction-card { background: #fff; margin: 0 12px 8px; border-radius: 12px; padding: 14px 16px; border: 1px solid var(--border); border-left: 3px solid var(--accent); }
 .int-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .int-type { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--accent-light); color: var(--accent); }
 .int-date { font-size: 11px; color: var(--muted); }
@@ -189,75 +387,39 @@ body {
 .int-next-label { font-size: 11px; font-weight: 700; color: var(--warn); flex-shrink: 0; }
 .int-next-text { font-size: 13px; color: #78350f; }
 
-/* ADD */
-#addScreen { background: var(--bg); }
+/* ADD FORM */
 .form-body { flex: 1; overflow-y: auto; padding: 12px 16px 100px; }
 .form-group { margin-bottom: 16px; }
 .form-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; display: block; }
 .form-label .required { color: var(--danger); margin-left: 2px; }
-.form-control {
-  width: 100%; background: #fff; border: 1.5px solid var(--border);
-  border-radius: 10px; padding: 12px 14px; font-size: 15px;
-  font-family: inherit; color: var(--text); outline: none; appearance: none;
-}
+.form-control { width: 100%; background: #fff; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 15px; font-family: inherit; color: var(--text); outline: none; appearance: none; }
 .form-control:focus { border-color: var(--accent); }
 textarea.form-control { resize: none; min-height: 100px; }
-.save-bar {
-  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 430px;
-  background: #fff; border-top: 1px solid var(--border); padding: 16px; display: flex; gap: 10px;
-}
-.btn-save {
-  flex: 1; background: var(--accent); border: none; border-radius: 12px;
-  color: #fff; font-size: 16px; font-weight: 700; padding: 14px;
-  cursor: pointer; font-family: inherit;
-}
+.save-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: #fff; border-top: 1px solid var(--border); padding: 16px; display: flex; gap: 10px; }
+.btn-save { flex: 1; background: var(--accent); border: none; border-radius: 12px; color: #fff; font-size: 16px; font-weight: 700; padding: 14px; cursor: pointer; font-family: inherit; }
 .btn-save:disabled { opacity: 0.6; cursor: not-allowed; }
-.btn-cancel {
-  background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px;
-  color: var(--muted); font-size: 15px; font-weight: 700; padding: 14px 20px;
-  cursor: pointer; font-family: inherit;
-}
+.btn-cancel { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; color: var(--muted); font-size: 15px; font-weight: 700; padding: 14px 20px; cursor: pointer; font-family: inherit; }
 
-/* FAB */
-.fab {
-  position: fixed; bottom: 24px;
-  right: max(20px, calc(50% - 430px/2 + 20px));
-  width: 56px; height: 56px; border-radius: 16px;
-  background: var(--accent); border: none; color: #fff; font-size: 28px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 16px rgba(29,78,216,0.4);
-}
+.fab { position: fixed; bottom: 24px; right: max(20px, calc(50% - 430px/2 + 20px)); width: 56px; height: 56px; border-radius: 16px; background: var(--accent); border: none; color: #fff; font-size: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(29,78,216,0.4); }
 
-/* EMPTY / LOADING */
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--muted); }
 .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { font-size: 14px; }
-
 .loading { display: flex; align-items: center; justify-content: center; padding: 40px; color: var(--muted); font-size: 14px; gap: 8px; }
 .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* TOAST */
-.toast {
-  position: fixed; bottom: 90px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: #1e293b; color: #fff; border-radius: 12px;
-  padding: 12px 20px; font-size: 14px; font-weight: 700;
-  opacity: 0; pointer-events: none; transition: all 0.3s;
-  z-index: 1000; white-space: nowrap;
-}
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1e293b; color: #fff; border-radius: 12px; padding: 12px 20px; font-size: 14px; font-weight: 700; opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 1000; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-@media (min-width: 430px) { body { box-shadow: 0 0 40px rgba(0,0,0,0.1); } }
+@media (min-width: 430px) and (max-width: 767px) { body { background: #e8eaf0; } .app-wrapper { box-shadow: 0 0 40px rgba(0,0,0,0.1); } }
 </style>
 </head>
 <body>
-
 <div class="toast" id="toast"></div>
 
-<!-- LOGIN -->
-<div class="screen active" id="loginScreen">
+<!-- LOGIN (共通) -->
+<div id="loginScreen" style="display:none;background:linear-gradient(160deg,#1e293b 0%,#0f172a 100%);align-items:center;justify-content:center;padding:40px 24px;min-height:100vh;flex-direction:column;">
   <div class="login-logo">📋</div>
   <div class="login-card">
     <h2>顧客管理システム</h2>
@@ -271,116 +433,154 @@ textarea.form-control { resize: none; min-height: 100px; }
   </div>
 </div>
 
-<!-- LIST -->
-<div class="screen" id="listScreen">
-  <div class="topbar">
-    <h1>顧客一覧</h1>
-    <button class="icon-btn" onclick="showStaffScreen()" title="担当者管理">👥</button>
-    <button class="icon-btn" onclick="doLogout()" title="ログアウト">⏻</button>
+<!-- PC LAYOUT -->
+<div id="pcLayout" style="display:none">
+  <!-- PC ヘッダー -->
+  <div class="pc-header">
+    <span class="logo">📋</span>
+    <h1>顧客管理システム</h1>
+    <div class="spacer"></div>
+    <span class="pc-user" id="pcUserLabel"></span>
+    <button class="pc-logout" onclick="doLogout()">ログアウト</button>
   </div>
-  <div class="search-bar">
-    <div class="search-input-wrap">
-      <span style="color:#94a3b8">🔍</span>
-      <input class="search-input" type="text" id="searchInput" placeholder="氏名・フリガナ・LINE名で検索" oninput="onSearch()">
+  <div style="display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:calc(100vh - 60px)">
+    <!-- サイドバー -->
+    <div class="pc-sidebar">
+      <div class="pc-nav-item active" id="nav-list" onclick="pcShowPanel('list')">
+        <span class="nav-icon">👥</span> 顧客一覧
+      </div>
+      <div class="pc-nav-item" id="nav-staff" onclick="pcShowPanel('staff')">
+        <span class="nav-icon">⚙️</span> 担当者管理
+      </div>
+    </div>
+    <!-- メインエリア -->
+    <div class="pc-main" id="pcMain">
+      <!-- JS で描画 -->
     </div>
   </div>
-  <div class="filter-row">
-    <div class="filter-chip active" data-status="全て" onclick="setFilter(this)">全て</div>
-    <div class="filter-chip" data-status="新規" onclick="setFilter(this)">新規</div>
-    <div class="filter-chip" data-status="対応中" onclick="setFilter(this)">対応中</div>
-    <div class="filter-chip" data-status="再フォロー" onclick="setFilter(this)">再フォロー</div>
-    <div class="filter-chip" data-status="完了" onclick="setFilter(this)">完了</div>
-  </div>
-  <div class="count-bar" id="countBar">読み込み中...</div>
-  <div class="list-content" id="customerList">
-    <div class="loading"><div class="spinner"></div>読み込み中...</div>
-  </div>
 </div>
 
-<!-- DETAIL -->
-<div class="screen" id="detailScreen">
-  <div class="topbar">
-    <button class="topbar-back" onclick="showScreen('listScreen')">‹</button>
-    <h1 id="detailTitle">顧客詳細</h1>
-  </div>
-  <div style="flex:1;overflow-y:auto;padding-bottom:80px" id="detailContent"></div>
-  <button class="fab" onclick="showAddScreen()">＋</button>
-</div>
+<!-- MOBILE LAYOUT -->
+<div class="app-wrapper" id="mobileLayout" style="display:none">
 
-<!-- STAFF MANAGEMENT -->
-<div class="screen" id="staffScreen">
-  <div class="topbar">
-    <button class="topbar-back" onclick="showScreen('listScreen')">‹</button>
-    <h1>担当者管理</h1>
+  <!-- MOBILE LIST -->
+  <div class="screen" id="listScreen">
+    <div class="mobile-topbar">
+      <h1>顧客一覧</h1>
+      <button class="icon-btn" onclick="showScreen('staffScreen')" title="担当者管理">👥</button>
+      <button class="icon-btn" onclick="doLogout()" title="ログアウト">⏻</button>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span style="color:#94a3b8">🔍</span>
+        <input class="search-input" type="text" id="searchInput" placeholder="氏名・フリガナ・LINE名で検索" oninput="onSearch()">
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-chip active" data-status="全て" onclick="setFilter(this)">全て</div>
+      <div class="filter-chip" data-status="新規" onclick="setFilter(this)">新規</div>
+      <div class="filter-chip" data-status="対応中" onclick="setFilter(this)">対応中</div>
+      <div class="filter-chip" data-status="再フォロー" onclick="setFilter(this)">再フォロー</div>
+      <div class="filter-chip" data-status="完了" onclick="setFilter(this)">完了</div>
+    </div>
+    <div class="count-bar" id="countBar">読み込み中...</div>
+    <div class="list-content" id="customerList">
+      <div class="loading"><div class="spinner"></div>読み込み中...</div>
+    </div>
   </div>
-  <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
-    <div id="staffList" style="margin-bottom:16px"></div>
-    <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px">
-      <div class="form-label" style="margin-bottom:8px">担当者を追加</div>
-      <div style="display:flex;gap:8px">
-        <input type="text" class="form-control" id="newStaffName" placeholder="担当者名" style="flex:1">
-        <button onclick="addStaff()" style="background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;padding:0 18px;cursor:pointer;font-family:inherit;white-space:nowrap">追加</button>
+
+  <!-- MOBILE DETAIL -->
+  <div class="screen" id="detailScreen">
+    <div class="mobile-topbar">
+      <button class="topbar-back" onclick="showScreen('listScreen')">‹</button>
+      <h1 id="detailTitle">顧客詳細</h1>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding-bottom:80px" id="detailContent"></div>
+    <button class="fab" onclick="showAddScreen()">＋</button>
+  </div>
+
+  <!-- MOBILE STAFF -->
+  <div class="screen" id="staffScreen">
+    <div class="mobile-topbar">
+      <button class="topbar-back" onclick="showScreen('listScreen')">‹</button>
+      <h1>担当者管理</h1>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:16px 16px 100px">
+      <div id="staffList" style="margin-bottom:16px"></div>
+      <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px">
+        <div class="form-label" style="margin-bottom:8px">担当者を追加</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="form-control" id="newStaffName" placeholder="担当者名" style="flex:1">
+          <button onclick="addStaff()" style="background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;padding:0 18px;cursor:pointer;font-family:inherit;white-space:nowrap">追加</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- ADD -->
-<div class="screen" id="addScreen">
-  <div class="topbar">
-    <button class="topbar-back" onclick="showScreen('detailScreen')">‹</button>
-    <h1>対応履歴を追加</h1>
+  <!-- MOBILE ADD -->
+  <div class="screen" id="addScreen">
+    <div class="mobile-topbar">
+      <button class="topbar-back" onclick="showScreen('detailScreen')">‹</button>
+      <h1>対応履歴を追加</h1>
+    </div>
+    <div class="form-body">
+      <div class="form-group">
+        <label class="form-label">担当者<span class="required">*</span></label>
+        <select class="form-control" id="fStaff"><option value="">読み込み中...</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">対応種別<span class="required">*</span></label>
+        <select class="form-control" id="fType">
+          <option value="">選択してください</option>
+          <option value="電話">📞 電話</option>
+          <option value="LINE">💬 LINE</option>
+          <option value="対面">🤝 対面</option>
+          <option value="その他">📝 その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">対応内容<span class="required">*</span></label>
+        <textarea class="form-control" id="fNotes" placeholder="対応内容を詳しく記載してください"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">次のアクション</label>
+        <input type="text" class="form-control" id="fNext" placeholder="例：来週月曜に電話フォロー">
+      </div>
+    </div>
+    <div class="save-bar">
+      <button class="btn-cancel" onclick="showScreen('detailScreen')">キャンセル</button>
+      <button class="btn-save" id="saveBtn" onclick="saveInteraction()">保存する</button>
+    </div>
   </div>
-  <div class="form-body">
-    <div class="form-group">
-      <label class="form-label">担当者<span class="required">*</span></label>
-      <select class="form-control" id="fStaff">
-        <option value="">読み込み中...</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">対応種別<span class="required">*</span></label>
-      <select class="form-control" id="fType">
-        <option value="">選択してください</option>
-        <option value="電話">📞 電話</option>
-        <option value="LINE">💬 LINE</option>
-        <option value="対面">🤝 対面</option>
-        <option value="その他">📝 その他</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">対応内容<span class="required">*</span></label>
-      <textarea class="form-control" id="fNotes" placeholder="対応内容を詳しく記載してください"></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">次のアクション</label>
-      <input type="text" class="form-control" id="fNext" placeholder="例：来週月曜に電話フォロー">
-    </div>
-  </div>
-  <div class="save-bar">
-    <button class="btn-cancel" onclick="showScreen('detailScreen')">キャンセル</button>
-    <button class="btn-save" id="saveBtn" onclick="saveInteraction()">保存する</button>
-  </div>
-</div>
+
+</div><!-- /mobileLayout -->
 
 <script>
-// ===== SUPABASE INIT =====
 const SUPABASE_URL = 'https://qqjnabaasmgxboejutaq.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxam5hYmFhc21neGJvZWp1dGFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0ODczMDYsImV4cCI6MjA5NjA2MzMwNn0.AfkZ7UYv8B8azHi7ikmy0goSUrxIiEVhqF8q2W-hEsQ';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ===== STATE =====
+const IS_PC = () => window.innerWidth >= 768;
+const AVATAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899'];
+
 let currentCustomerId = null;
 let currentFilter = '全て';
 let searchTimer = null;
-const AVATAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899'];
+let pcCurrentPanel = 'list';
 
-// ===== SCREENS =====
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
+// ===== INIT =====
+function getAvatarColor(name) {
+  let h = 0; for (let i=0;i<(name||'').length;i++) h+=name.charCodeAt(i);
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+
+function formatDate(str) { if(!str) return ''; return str.replace('T',' ').substring(0,16); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
 }
 
 // ===== AUTH =====
@@ -389,47 +589,258 @@ async function doLogin() {
   const pw = document.getElementById('loginPw').value;
   const btn = document.getElementById('loginBtn');
   const err = document.getElementById('loginError');
-
-  if (!email || !pw) { err.textContent = 'メールアドレスとパスワードを入力してください'; return; }
-
-  btn.disabled = true;
-  btn.textContent = 'ログイン中...';
-  err.textContent = '';
-
-  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
-
-  if (error) {
-    err.textContent = 'メールアドレスまたはパスワードが違います';
-    btn.disabled = false;
-    btn.textContent = 'ログイン';
-    return;
-  }
-
-  btn.disabled = false;
-  btn.textContent = 'ログイン';
-  showScreen('listScreen');
-  loadCustomers();
+  if (!email || !pw) { err.textContent='メールアドレスとパスワードを入力してください'; return; }
+  btn.disabled=true; btn.textContent='ログイン中...'; err.textContent='';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) { err.textContent='メールアドレスまたはパスワードが違います'; btn.disabled=false; btn.textContent='ログイン'; return; }
+  btn.disabled=false; btn.textContent='ログイン';
+  enterApp(data.user);
 }
 
 async function doLogout() {
   await sb.auth.signOut();
-  showScreen('loginScreen');
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('pcLayout').style.display='none';
+  document.getElementById('mobileLayout').style.display='none';
   showToast('ログアウトしました');
 }
 
-// Enterキーでログイン
-document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+function enterApp(user) {
+  document.getElementById('loginScreen').style.display='none';
+  if (IS_PC()) {
+    document.getElementById('pcLayout').style.display='block';
+    document.getElementById('mobileLayout').style.display='none';
+    if (user) document.getElementById('pcUserLabel').textContent = user.email;
+    pcShowPanel('list');
+  } else {
+    document.getElementById('mobileLayout').style.display='block';
+    document.getElementById('pcLayout').style.display='none';
+    showScreen('listScreen');
+    loadCustomers();
+  }
+}
 
-// ===== LIST =====
-function getAvatarColor(name) {
-  let hash = 0;
-  for (let i = 0; i < (name||'').length; i++) hash += name.charCodeAt(i);
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length];
+document.getElementById('loginPw').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('loginEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+// ===== PC PANELS =====
+async function pcShowPanel(panel) {
+  pcCurrentPanel = panel;
+  document.querySelectorAll('.pc-nav-item').forEach(n=>n.classList.remove('active'));
+  const navEl = document.getElementById('nav-'+panel);
+  if (navEl) navEl.classList.add('active');
+  const main = document.getElementById('pcMain');
+  main.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  if (panel === 'list') await pcRenderList();
+  if (panel === 'detail') await pcRenderDetail(currentCustomerId);
+  if (panel === 'staff') await pcRenderStaff();
+  if (panel === 'add') pcRenderAddForm();
+}
+
+// PC LIST
+async function pcRenderList(q, filter) {
+  q = q ?? document.getElementById('pcSearchInput')?.value?.trim() ?? '';
+  filter = filter ?? currentFilter;
+  const main = document.getElementById('pcMain');
+
+  let query = sb.from('customers').select('id,customer_code,full_name,kana_name,line_name,prefecture,status,assigned_to,last_contact_at').order('last_contact_at',{ascending:false});
+  if (filter !== '全て') query = query.eq('status', filter);
+  if (q) query = query.or(`full_name.ilike.%${q}%,kana_name.ilike.%${q}%,line_name.ilike.%${q}%`);
+  const { data, error } = await query;
+
+  const chips = ['全て','新規','対応中','再フォロー','完了'].map(s=>`
+    <div class="filter-chip ${filter===s?'active':''}" onclick="currentFilter='${s}';pcRenderList()">${s}</div>
+  `).join('');
+
+  if (error || !data) { main.innerHTML=`<div class="empty-state"><div class="icon">⚠️</div><p>読み込みエラー</p></div>`; return; }
+
+  const rows = data.length === 0
+    ? '<div class="empty-state" style="padding:40px"><div class="icon">🔍</div><p>該当する顧客が見つかりません</p></div>'
+    : `<div class="pc-table-header"><div>顧客名</div><div>ステータス</div><div>都道府県</div><div>担当者</div><div>最終接触</div></div>`
+      + data.map(c=>`
+        <div class="pc-table-row" onclick="currentCustomerId='${c.id}';pcShowPanel('detail')">
+          <div><div class="pc-table-name">${c.full_name||''}</div><div class="pc-table-sub">${c.kana_name||''}</div></div>
+          <div><span class="badge badge-${c.status||''}">${c.status||''}</span></div>
+          <div class="pc-table-cell">${c.prefecture||'-'}</div>
+          <div class="pc-table-cell">${c.assigned_to||'-'}</div>
+          <div class="pc-table-cell" style="font-size:12px">${c.last_contact_at||'-'}</div>
+        </div>`).join('');
+
+  main.innerHTML = `
+    <div class="pc-search-bar">
+      <div class="pc-search-input-wrap">
+        <span style="color:var(--muted)">🔍</span>
+        <input class="pc-search-input" id="pcSearchInput" type="text" placeholder="氏名・フリガナ・LINE名で検索" value="${q}" oninput="clearTimeout(searchTimer);searchTimer=setTimeout(()=>pcRenderList(),300)">
+      </div>
+    </div>
+    <div class="pc-filter-chips" style="margin-bottom:16px">${chips}</div>
+    <div class="pc-panel">
+      <div class="pc-panel-header">
+        <h2>顧客一覧</h2>
+        <span style="font-size:13px;color:var(--muted)">${data.length}件</span>
+      </div>
+      ${rows}
+    </div>`;
+}
+
+// PC DETAIL
+async function pcRenderDetail(id) {
+  const main = document.getElementById('pcMain');
+  const [{ data: c, error: e1 }, { data: ints }] = await Promise.all([
+    sb.from('customers').select('*').eq('id', id).single(),
+    sb.from('interactions').select('*').eq('customer_id', id).order('created_at',{ascending:false})
+  ]);
+  if (e1) { main.innerHTML=`<div class="empty-state"><div class="icon">⚠️</div><p>${e1.message}</p></div>`; return; }
+
+  const pcRow = (label,val) => `<div class="pc-info-row"><div class="pc-info-label">${label}</div><div class="pc-info-value">${val}</div></div>`;
+  const intHtml = (ints&&ints.length>0) ? ints.map(i=>`
+    <div class="pc-int-card">
+      <div class="pc-int-header">
+        <span class="int-type">${i.interaction_type||''}</span>
+        <span style="font-size:12px;color:var(--muted);margin-left:8px">担当：${i.staff_name||''}</span>
+        <span style="flex:1"></span>
+        <span style="font-size:11px;color:var(--muted)">${formatDate(i.created_at)}</span>
+      </div>
+      <div class="pc-int-notes">${i.notes||''}</div>
+      ${i.next_action?`<div class="pc-int-next"><span class="int-next-label">次のアクション</span><span class="int-next-text">${i.next_action}</span></div>`:''}
+    </div>`).join('')
+    : '<div class="empty-state" style="padding:30px"><div class="icon">📝</div><p>対応履歴がありません</p></div>';
+
+  main.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button onclick="pcShowPanel('list')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--muted)">‹ 一覧に戻る</button>
+      <h2 style="font-size:20px;font-weight:700">${c.full_name||''}</h2>
+      <span class="badge badge-${c.status||''}">${c.status||''}</span>
+    </div>
+    <div class="pc-detail-grid">
+      <div>
+        <div class="pc-panel" style="margin-bottom:20px">
+          <div class="pc-panel-header"><h2>基本情報</h2></div>
+          <div class="pc-info-grid">
+            ${pcRow('顧客コード', c.customer_code||'-')}
+            ${pcRow('フリガナ', c.kana_name||'-')}
+            ${pcRow('LINE名', c.line_name||'-')}
+            ${pcRow('性別 / 年齢', `${c.gender||'-'} / ${c.age?c.age+'歳':'-'}`)}
+            ${pcRow('都道府県', c.prefecture||'-')}
+            ${pcRow('職種', c.occupation||'-')}
+            ${pcRow('勤務形態', c.employment_type||'-')}
+            ${pcRow('紹介者', c.referrer_name||'-')}
+            ${pcRow('担当者', c.assigned_to||'-')}
+            ${pcRow('最終接触日', c.last_contact_at||'-')}
+            ${pcRow('興味関心', c.interests||'-')}
+            ${pcRow('希望内容', c.support_request||'-')}
+          </div>
+        </div>
+        <div class="pc-panel">
+          <div class="pc-panel-header"><h2>財務情報</h2></div>
+          <div class="pc-info-grid">
+            ${pcRow('金融事故歴', c.financial_incident?'<span style="color:var(--danger);font-weight:700">有</span>':'なし')}
+            ${pcRow('事故詳細', c.incident_detail||'-')}
+            ${pcRow('滞納状況', c.arrears_status||'-')}
+            ${pcRow('未納内容', c.unpaid_detail||'-')}
+            ${pcRow('カード利用', c.card_status||'-')}
+            ${pcRow('口座凍結歴', c.frozen_account?'<span style="color:var(--danger);font-weight:700">有</span>':'なし')}
+            ${pcRow('住居形態', c.housing_type||'-')}
+            ${pcRow('インフラ決済権', c.utilities_control||'-')}
+          </div>
+          ${c.notes?`<div style="padding:12px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--muted)">${c.notes}</div>`:''}
+        </div>
+      </div>
+      <div>
+        <div class="pc-panel">
+          <div class="pc-panel-header">
+            <h2>対応履歴 (${ints?ints.length:0}件)</h2>
+            <button onclick="currentCustomerId='${c.id}';pcShowPanel('add')" style="background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;padding:7px 14px;cursor:pointer;font-family:inherit">＋ 追加</button>
+          </div>
+          ${intHtml}
+        </div>
+      </div>
+    </div>`;
+}
+
+// PC STAFF
+async function pcRenderStaff() {
+  const main = document.getElementById('pcMain');
+  const { data, error } = await sb.from('staff').select('*').order('name');
+  const rows = (!error && data && data.length > 0)
+    ? data.map(s=>`
+      <div class="pc-staff-row">
+        <span style="flex:1;font-size:15px;font-weight:700;color:${s.active?'var(--text)':'var(--muted)'}">${s.name}${!s.active?' (無効)':''}</span>
+        <button onclick="toggleStaff('${s.id}',${s.active})" style="background:${s.active?'#fef2f2':'#f0fdf4'};border:1px solid ${s.active?'#fecaca':'#bbf7d0'};border-radius:8px;color:${s.active?'var(--danger)':'var(--success)'};font-size:12px;font-weight:700;padding:5px 14px;cursor:pointer;font-family:inherit">
+          ${s.active?'無効化':'有効化'}
+        </button>
+      </div>`).join('')
+    : '<div style="padding:20px;color:var(--muted);font-size:14px">担当者がいません</div>';
+
+  main.innerHTML = `
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">担当者管理</h2>
+    <div class="pc-panel" style="max-width:480px;margin-bottom:20px">
+      <div class="pc-panel-header"><h2>担当者一覧</h2></div>
+      <div id="pcStaffRows">${rows}</div>
+    </div>
+    <div class="pc-panel" style="max-width:480px">
+      <div class="pc-panel-header"><h2>担当者を追加</h2></div>
+      <div style="padding:16px;display:flex;gap:10px">
+        <input type="text" class="form-control" id="newStaffName" placeholder="担当者名" style="flex:1">
+        <button onclick="addStaff()" style="background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;padding:0 20px;cursor:pointer;font-family:inherit;white-space:nowrap">追加</button>
+      </div>
+    </div>`;
+}
+
+// PC ADD FORM
+async function pcRenderAddForm() {
+  const main = document.getElementById('pcMain');
+  const { data: staffData } = await sb.from('staff').select('name').eq('active',true).order('name');
+  const staffOpts = (staffData||[]).map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+
+  main.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <button onclick="pcShowPanel('detail')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--muted)">‹ 戻る</button>
+      <h2 style="font-size:20px;font-weight:700">対応履歴を追加</h2>
+    </div>
+    <div class="pc-panel" style="max-width:640px">
+      <div class="pc-form-grid">
+        <div class="form-group">
+          <label class="form-label">担当者<span class="required">*</span></label>
+          <select class="form-control" id="fStaff">
+            <option value="">選択してください</option>${staffOpts}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">対応種別<span class="required">*</span></label>
+          <select class="form-control" id="fType">
+            <option value="">選択してください</option>
+            <option value="電話">📞 電話</option>
+            <option value="LINE">💬 LINE</option>
+            <option value="対面">🤝 対面</option>
+            <option value="その他">📝 その他</option>
+          </select>
+        </div>
+        <div class="form-group pc-form-full">
+          <label class="form-label">対応内容<span class="required">*</span></label>
+          <textarea class="form-control" id="fNotes" placeholder="対応内容を詳しく記載してください"></textarea>
+        </div>
+        <div class="form-group pc-form-full">
+          <label class="form-label">次のアクション</label>
+          <input type="text" class="form-control" id="fNext" placeholder="例：来週月曜に電話フォロー">
+        </div>
+      </div>
+      <div class="save-bar" style="padding:0 20px 20px;background:none;position:static;border:none;transform:none;width:auto;max-width:none">
+        <button class="btn-cancel" onclick="pcShowPanel('detail')">キャンセル</button>
+        <button class="btn-save" id="saveBtn" onclick="saveInteraction()">保存する</button>
+      </div>
+    </div>`;
+}
+
+// ===== MOBILE FUNCTIONS =====
+function showScreen(id) {
+  document.querySelectorAll('#mobileLayout .screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
 }
 
 function setFilter(el) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   currentFilter = el.dataset.status;
   loadCustomers();
@@ -441,39 +852,23 @@ function onSearch() {
 }
 
 async function loadCustomers() {
-  const q = document.getElementById('searchInput').value.trim();
+  const q = document.getElementById('searchInput')?.value?.trim() ?? '';
   const listEl = document.getElementById('customerList');
-  listEl.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  if (listEl) listEl.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
 
-  let query = sb.from('customers').select('id,customer_code,full_name,kana_name,line_name,prefecture,status,assigned_to,last_contact_at').order('last_contact_at', { ascending: false });
-
-  if (currentFilter !== '全て') {
-    query = query.eq('status', currentFilter);
-  }
-
-  if (q) {
-    query = query.or(`full_name.ilike.%${q}%,kana_name.ilike.%${q}%,line_name.ilike.%${q}%`);
-  }
-
+  let query = sb.from('customers').select('id,customer_code,full_name,kana_name,line_name,prefecture,status,assigned_to,last_contact_at').order('last_contact_at',{ascending:false});
+  if (currentFilter !== '全て') query = query.eq('status', currentFilter);
+  if (q) query = query.or(`full_name.ilike.%${q}%,kana_name.ilike.%${q}%,line_name.ilike.%${q}%`);
   const { data, error } = await query;
 
-  if (error) {
-    listEl.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>読み込みエラー: ${error.message}</p></div>`;
-    return;
-  }
-
-  document.getElementById('countBar').textContent = `${data.length}件`;
-
-  if (data.length === 0) {
-    listEl.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><p>該当する顧客が見つかりません</p></div>';
-    return;
-  }
-
-  listEl.innerHTML = data.map(c => `
+  const countEl = document.getElementById('countBar');
+  if (error) { if(listEl) listEl.innerHTML=`<div class="empty-state"><div class="icon">⚠️</div><p>${error.message}</p></div>`; return; }
+  if (countEl) countEl.textContent = `${data.length}件`;
+  if (!listEl) return;
+  if (data.length === 0) { listEl.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>該当する顧客が見つかりません</p></div>'; return; }
+  listEl.innerHTML = data.map(c=>`
     <div class="customer-card" onclick="showDetail('${c.id}')">
-      <div class="customer-avatar" style="background:${getAvatarColor(c.full_name)}">
-        ${(c.full_name||'?').replace(/\s/g,'').charAt(0)}
-      </div>
+      <div class="customer-avatar" style="background:${getAvatarColor(c.full_name)}">${(c.full_name||'?').replace(/\s/g,'').charAt(0)}</div>
       <div class="customer-info">
         <div class="customer-name">${c.full_name||''}</div>
         <div class="customer-sub">${c.kana_name||''} · ${c.prefecture||''}</div>
@@ -482,106 +877,69 @@ async function loadCustomers() {
         <span class="badge badge-${c.status||''}">${c.status||''}</span>
         <span class="assigned-label">${c.assigned_to||''}</span>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-// ===== DETAIL =====
 async function showDetail(id) {
   currentCustomerId = id;
-  document.getElementById('detailContent').innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  document.getElementById('detailContent').innerHTML='<div class="loading"><div class="spinner"></div>読み込み中...</div>';
   showScreen('detailScreen');
-
-  const [{ data: c, error: e1 }, { data: ints, error: e2 }] = await Promise.all([
-    sb.from('customers').select('*').eq('id', id).single(),
-    sb.from('interactions').select('*').eq('customer_id', id).order('created_at', { ascending: false })
+  const [{ data: c, error: e1 }, { data: ints }] = await Promise.all([
+    sb.from('customers').select('*').eq('id',id).single(),
+    sb.from('interactions').select('*').eq('customer_id',id).order('created_at',{ascending:false})
   ]);
-
-  if (e1) { document.getElementById('detailContent').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>${e1.message}</p></div>`; return; }
-
-  document.getElementById('detailTitle').textContent = c.full_name || '顧客詳細';
-
-  const intHtml = (ints && ints.length > 0)
-    ? ints.map(i => `
-      <div class="interaction-card">
-        <div class="int-header">
-          <span class="int-type">${i.interaction_type||''}</span>
-          <span class="int-date">${formatDate(i.created_at)}</span>
-        </div>
-        <div class="int-staff">担当：${i.staff_name||''}</div>
-        <div class="int-notes">${i.notes||''}</div>
-        ${i.next_action ? `<div class="int-next"><span class="int-next-label">次のアクション</span><span class="int-next-text">${i.next_action}</span></div>` : ''}
-      </div>`).join('')
+  if (e1) { document.getElementById('detailContent').innerHTML=`<div class="empty-state"><div class="icon">⚠️</div><p>${e1.message}</p></div>`; return; }
+  document.getElementById('detailTitle').textContent = c.full_name||'顧客詳細';
+  const intHtml = (ints&&ints.length>0) ? ints.map(i=>`
+    <div class="interaction-card">
+      <div class="int-header"><span class="int-type">${i.interaction_type||''}</span><span class="int-date">${formatDate(i.created_at)}</span></div>
+      <div class="int-staff">担当：${i.staff_name||''}</div>
+      <div class="int-notes">${i.notes||''}</div>
+      ${i.next_action?`<div class="int-next"><span class="int-next-label">次のアクション</span><span class="int-next-text">${i.next_action}</span></div>`:''}
+    </div>`).join('')
     : '<div class="empty-state"><div class="icon">📝</div><p>対応履歴がありません</p></div>';
 
+  const r = (label,val) => `<div class="info-row"><div class="info-label">${label}</div><div class="info-value">${val}</div></div>`;
   document.getElementById('detailContent').innerHTML = `
     <div class="detail-hero">
       <div class="detail-name">${c.full_name||''}</div>
       <div class="detail-kana">${c.kana_name||''}</div>
       <div class="detail-chips">
         <span class="badge badge-${c.status||''}">${c.status||''}</span>
-        ${c.prefecture ? `<span class="detail-chip">📍 ${c.prefecture}</span>` : ''}
-        ${c.assigned_to ? `<span class="detail-chip">👤 ${c.assigned_to}</span>` : ''}
-        ${c.last_contact_at ? `<span class="detail-chip">📅 ${c.last_contact_at}</span>` : ''}
+        ${c.prefecture?`<span class="detail-chip">📍 ${c.prefecture}</span>`:''}
+        ${c.assigned_to?`<span class="detail-chip">👤 ${c.assigned_to}</span>`:''}
+        ${c.last_contact_at?`<span class="detail-chip">📅 ${c.last_contact_at}</span>`:''}
       </div>
     </div>
-
     <div class="section-title">基本情報</div>
     <div class="info-card">
-      ${row('顧客コード', c.customer_code)}
-      ${row('LINE名', c.line_name||'-')}
-      ${row('性別 / 年齢', `${c.gender||'-'} / ${c.age ? c.age+'歳' : '-'}`)}
-      ${row('職種', c.occupation||'-')}
-      ${row('勤務形態', c.employment_type||'-')}
-      ${row('紹介者', c.referrer_name||'-')}
+      ${r('顧客コード',c.customer_code)} ${r('LINE名',c.line_name||'-')}
+      ${r('性別/年齢',`${c.gender||'-'} / ${c.age?c.age+'歳':'-'}`)} ${r('職種',c.occupation||'-')}
+      ${r('勤務形態',c.employment_type||'-')} ${r('紹介者',c.referrer_name||'-')}
     </div>
-
-    <div class="collapse-toggle" onclick="toggleCollapse(this)">
-      <span class="ct-label">財務・詳細情報</span>
-      <span class="ct-arrow">›</span>
-    </div>
+    <div class="collapse-toggle" onclick="toggleCollapse(this)"><span class="ct-label">財務・詳細情報</span><span class="ct-arrow">›</span></div>
     <div class="collapsible">
       <div class="info-card" style="margin-bottom:0">
-        ${row('興味関心', c.interests||'-')}
-        ${row('希望内容', c.support_request||'-')}
-        ${row('金融事故歴', c.financial_incident ? '<span class="info-bool-yes">有</span>' : '<span class="info-bool-no">なし</span>')}
-        ${c.financial_incident ? row('事故詳細', c.incident_detail||'-') : ''}
-        ${row('滞納状況', c.arrears_status||'-')}
-        ${row('カード利用', c.card_status||'-')}
-        ${row('口座凍結歴', c.frozen_account ? '<span class="info-bool-yes">有</span>' : '<span class="info-bool-no">なし</span>')}
-        ${row('住居形態', c.housing_type||'-')}
-        ${row('インフラ決済権', c.utilities_control||'-')}
-        ${row('備考', c.notes||'-')}
+        ${r('興味関心',c.interests||'-')} ${r('希望内容',c.support_request||'-')}
+        ${r('金融事故歴',c.financial_incident?'<span class="info-bool-yes">有</span>':'<span class="info-bool-no">なし</span>')}
+        ${c.financial_incident?r('事故詳細',c.incident_detail||'-'):''}
+        ${r('滞納状況',c.arrears_status||'-')} ${r('カード利用',c.card_status||'-')}
+        ${r('口座凍結歴',c.frozen_account?'<span class="info-bool-yes">有</span>':'<span class="info-bool-no">なし</span>')}
+        ${r('住居形態',c.housing_type||'-')} ${r('インフラ決済権',c.utilities_control||'-')}
+        ${r('備考',c.notes||'-')}
       </div>
     </div>
-
-    <div class="section-title" style="margin-top:8px">対応履歴 (${ints ? ints.length : 0}件)</div>
+    <div class="section-title" style="margin-top:8px">対応履歴 (${ints?ints.length:0}件)</div>
     ${intHtml}
-    <div style="height:20px"></div>
-  `;
+    <div style="height:20px"></div>`;
 }
 
-function row(label, value) {
-  return `<div class="info-row"><div class="info-label">${label}</div><div class="info-value">${value}</div></div>`;
-}
+function toggleCollapse(el) { el.classList.toggle('open'); el.nextElementSibling.classList.toggle('open'); }
 
-function toggleCollapse(el) {
-  el.classList.toggle('open');
-  el.nextElementSibling.classList.toggle('open');
-}
-
-function formatDate(str) {
-  if (!str) return '';
-  return str.replace('T', ' ').substring(0, 16);
-}
-
-// ===== ADD INTERACTION =====
-function showAddScreen() {
-  document.getElementById('fStaff').value = '';
-  document.getElementById('fType').value = '';
-  document.getElementById('fNotes').value = '';
-  document.getElementById('fNext').value = '';
-  loadStaffOptions();
+async function showAddScreen() {
+  document.getElementById('fNotes').value='';
+  document.getElementById('fNext').value='';
+  await loadStaffOptions();
   showScreen('addScreen');
 }
 
@@ -590,99 +948,77 @@ async function saveInteraction() {
   const type = document.getElementById('fType').value;
   const notes = document.getElementById('fNotes').value.trim();
   const next = document.getElementById('fNext').value.trim();
-
   if (!staff) { showToast('担当者を選択してください'); return; }
   if (!type) { showToast('対応種別を選択してください'); return; }
   if (!notes) { showToast('対応内容を入力してください'); return; }
-
   const btn = document.getElementById('saveBtn');
-  btn.disabled = true;
-  btn.textContent = '保存中...';
-
+  btn.disabled=true; btn.textContent='保存中...';
   const { error } = await sb.from('interactions').insert({
-    customer_id: currentCustomerId,
-    staff_name: staff,
-    interaction_type: type.replace(/^.+\s/, ''), // 絵文字除去
-    notes,
-    next_action: next || null,
+    customer_id: currentCustomerId, staff_name: staff,
+    interaction_type: type.replace(/^.+\s/,''), notes, next_action: next||null,
   });
-
-  btn.disabled = false;
-  btn.textContent = '保存する';
-
-  if (error) { showToast('保存失敗: ' + error.message); return; }
-
+  btn.disabled=false; btn.textContent='保存する';
+  if (error) { showToast('保存失敗: '+error.message); return; }
   showToast('対応履歴を追加しました ✓');
-  showDetail(currentCustomerId);
-}
-
-// ===== TOAST =====
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  if (IS_PC()) { pcShowPanel('detail'); } else { showDetail(currentCustomerId); }
 }
 
 // ===== STAFF =====
 async function loadStaffOptions() {
   const sel = document.getElementById('fStaff');
-  const { data, error } = await sb.from('staff').select('name').eq('active', true).order('name');
+  if (!sel) return;
+  const { data } = await sb.from('staff').select('name').eq('active',true).order('name');
   sel.innerHTML = '<option value="">選択してください</option>';
-  if (!error && data) {
-    data.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.name;
-      sel.appendChild(opt);
-    });
-  }
-}
-
-async function showStaffScreen() {
-  showScreen('staffScreen');
-  await renderStaffList();
+  (data||[]).forEach(s=>{ const o=document.createElement('option'); o.value=s.name; o.textContent=s.name; sel.appendChild(o); });
 }
 
 async function renderStaffList() {
   const el = document.getElementById('staffList');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>読み込み中...</div>';
-  const { data, error } = await sb.from('staff').select('*').order('name');
-  if (error || !data) { el.innerHTML = '<p style="color:var(--muted);font-size:14px">読み込みエラー</p>'; return; }
-  if (data.length === 0) { el.innerHTML = '<p style="color:var(--muted);font-size:14px">担当者がいません</p>'; return; }
-  el.innerHTML = data.map(s => `
+  if (!el) return;
+  el.innerHTML='<div class="loading"><div class="spinner"></div>読み込み中...</div>';
+  const { data } = await sb.from('staff').select('*').order('name');
+  if (!data||data.length===0) { el.innerHTML='<p style="color:var(--muted);font-size:14px;padding:8px">担当者がいません</p>'; return; }
+  el.innerHTML = data.map(s=>`
     <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px">
-      <span style="flex:1;font-size:15px;font-weight:700;color:${s.active ? 'var(--text)' : 'var(--muted)'}">${s.name}${!s.active ? ' <span style="font-size:11px;color:var(--muted)">(無効)</span>' : ''}</span>
-      <button onclick="toggleStaff('${s.id}', ${s.active})" style="background:${s.active ? '#fef2f2' : '#f0fdf4'};border:1px solid ${s.active ? '#fecaca' : '#bbf7d0'};border-radius:8px;color:${s.active ? 'var(--danger)' : 'var(--success)'};font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer;font-family:inherit">
-        ${s.active ? '無効化' : '有効化'}
+      <span style="flex:1;font-size:15px;font-weight:700;color:${s.active?'var(--text)':'var(--muted)'}">${s.name}${!s.active?' (無効)':''}</span>
+      <button onclick="toggleStaff('${s.id}',${s.active})" style="background:${s.active?'#fef2f2':'#f0fdf4'};border:1px solid ${s.active?'#fecaca':'#bbf7d0'};border-radius:8px;color:${s.active?'var(--danger)':'var(--success)'};font-size:12px;font-weight:700;padding:5px 12px;cursor:pointer;font-family:inherit">
+        ${s.active?'無効化':'有効化'}
       </button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function addStaff() {
   const name = document.getElementById('newStaffName').value.trim();
   if (!name) { showToast('担当者名を入力してください'); return; }
   const { error } = await sb.from('staff').insert({ name, active: true });
-  if (error) { showToast('追加失敗: ' + error.message); return; }
-  document.getElementById('newStaffName').value = '';
+  if (error) { showToast('追加失敗: '+error.message); return; }
+  document.getElementById('newStaffName').value='';
   showToast(`${name} を追加しました ✓`);
-  await renderStaffList();
+  if (IS_PC()) { pcRenderStaff(); } else { renderStaffList(); }
 }
 
-async function toggleStaff(id, currentActive) {
-  const { error } = await sb.from('staff').update({ active: !currentActive }).eq('id', id);
-  if (error) { showToast('更新失敗: ' + error.message); return; }
-  showToast(currentActive ? '無効化しました' : '有効化しました');
-  await renderStaffList();
+async function toggleStaff(id, current) {
+  const { error } = await sb.from('staff').update({ active: !current }).eq('id', id);
+  if (error) { showToast('更新失敗: '+error.message); return; }
+  showToast(current?'無効化しました':'有効化しました');
+  if (IS_PC()) { pcRenderStaff(); } else { renderStaffList(); }
 }
+
+// staffScreenを表示するときは一覧も読み込む
+const origShowScreen = showScreen;
+window.showScreen = function(id) {
+  origShowScreen(id);
+  if (id === 'staffScreen') renderStaffList();
+};
 
 // ===== SESSION CHECK =====
 (async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    showScreen('listScreen');
-    loadCustomers();
+  if (session) { enterApp(session.user); }
+  else {
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('pcLayout').style.display='none';
+    document.getElementById('mobileLayout').style.display='none';
   }
 })();
 </script>
