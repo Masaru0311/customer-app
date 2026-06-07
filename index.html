@@ -446,7 +446,7 @@ textarea.form-control { resize: none; min-height: 100px; }
   <div style="display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:calc(100vh - 60px)">
     <!-- サイドバー -->
     <div class="pc-sidebar">
-      <div class="pc-nav-item active" id="nav-list" onclick="pcShowPanel('list')">
+      <div class="pc-nav-item active" id="nav-list" onclick="pcSearchQuery='';currentFilter='全て';pcShowPanel('list')">
         <span class="nav-icon">👥</span> 顧客一覧
       </div>
       <div class="pc-nav-item" id="nav-staff" onclick="pcShowPanel('staff')">
@@ -654,6 +654,8 @@ async function pcShowPanel(panel) {
 }
 
 // PC LIST
+let pcListScrollY = 0; // 一覧のスクロール位置を保持
+
 async function pcRenderList(q, filter) {
   // 引数がなければ保持中の値を使う
   q = q !== undefined ? q : (document.getElementById('pcSearchInput')?.value?.trim() ?? pcSearchQuery);
@@ -684,7 +686,7 @@ async function pcRenderList(q, filter) {
     ? '<div class="empty-state" style="padding:40px"><div class="icon">🔍</div><p>該当する顧客が見つかりません</p></div>'
     : `<div class="pc-table-header"><div>顧客名</div><div>ステータス</div><div>都道府県</div><div>担当者</div><div>最終接触</div></div>`
       + data.map(c=>`
-        <div class="pc-table-row" onclick="currentCustomerId='${c.id}';pcShowPanel('detail')">
+        <div class="pc-table-row" id="row-${c.id}" onclick="pcListScrollY=document.getElementById('pcMain').scrollTop;currentCustomerId='${c.id}';pcShowPanel('detail')">
           <div><div class="pc-table-name">${c.full_name||''}</div><div class="pc-table-sub">${c.kana_name||''}</div></div>
           <div><span class="badge badge-${c.status||''}">${c.status||''}</span></div>
           <div class="pc-table-cell">${c.prefecture||'-'}</div>
@@ -707,6 +709,15 @@ async function pcRenderList(q, filter) {
       </div>
       ${rows}
     </div>`;
+
+  // 選択していた行にスクロール復元
+  if (pcListScrollY > 0) {
+    main.scrollTop = pcListScrollY;
+    // 選択行をハイライト
+    const selectedRow = document.getElementById(`row-${currentCustomerId}`);
+    if (selectedRow) selectedRow.style.background = '#f0f4ff';
+    setTimeout(() => { if (selectedRow) selectedRow.style.background = ''; }, 1500);
+  }
 }
 
 // PC DETAIL
