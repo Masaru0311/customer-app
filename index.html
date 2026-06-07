@@ -757,7 +757,7 @@ async function pcRenderDetail(id) {
 
   main.innerHTML = `
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-      <button onclick="pcShowPanel('list')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--muted)">‹ 一覧に戻る</button>
+      <button onclick="pcShowPanel('list')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;font-family:inherit;color:var(--muted)">‹ 検索結果に戻る</button>
       <h2 style="font-size:20px;font-weight:700">${c.full_name||''}</h2>
       <span class="badge badge-${c.status||''}">${c.status||''}</span>
       <button onclick="showEditStatusModal('${c.id}','${c.status||''}')" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:13px;padding:4px 10px;cursor:pointer">✏️ ステータス変更</button>
