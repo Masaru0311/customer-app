@@ -580,6 +580,7 @@ const AVATAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d
 
 let currentCustomerId = null;
 let currentFilter = '全て';
+let pcSearchQuery = ''; // PC検索ワードを保持
 let searchTimer = null;
 let pcCurrentPanel = 'list';
 
@@ -654,8 +655,10 @@ async function pcShowPanel(panel) {
 
 // PC LIST
 async function pcRenderList(q, filter) {
-  q = q ?? document.getElementById('pcSearchInput')?.value?.trim() ?? '';
+  // 引数がなければ保持中の値を使う
+  q = q !== undefined ? q : (document.getElementById('pcSearchInput')?.value?.trim() ?? pcSearchQuery);
   filter = filter ?? currentFilter;
+  pcSearchQuery = q; // 検索ワードを保存
   const main = document.getElementById('pcMain');
 
   const [listResult, statusResult] = await Promise.all([
